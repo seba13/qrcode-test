@@ -12,9 +12,18 @@ const QRScanner: React.FC = () => {
   const startScanning = async () => {
     if (!qrCodeRegionRef.current) return;
 
-    if (!html5QrcodeRef.current) {
-      html5QrcodeRef.current = new Html5Qrcode(qrCodeRegionRef.current.id);
+    // Si hay una instancia previa, limpiar
+    if (html5QrcodeRef.current) {
+      try {
+        await html5QrcodeRef.current.stop();
+        await html5QrcodeRef.current.clear();
+      } catch {
+        //
+      }
     }
+
+    // Crear nueva instancia siempre
+    html5QrcodeRef.current = new Html5Qrcode(qrCodeRegionRef.current.id);
 
     try {
       await html5QrcodeRef.current.start(
